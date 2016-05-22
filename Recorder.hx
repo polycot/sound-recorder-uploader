@@ -26,6 +26,8 @@ import flash.events.TimerEvent;
 import flash.events.SecurityErrorEvent;
 import flash.events.IOErrorEvent;
 
+import flash.external.ExternalInterface;
+
 import fr.kikko.lab.ShineMP3Encoder;
 import WAVWriter;
 import ControlButton;
@@ -71,7 +73,7 @@ class Recorder {
 		playBtn = new ControlButton("play", doPlay, 160, 20);
 		mc.addChild(playBtn);
 		
-		saveBtn = new ControlButton("save", doSave, 230, 20);
+		saveBtn = new ControlButton("save", reallySave, 230, 20);
 		mc.addChild(saveBtn);
 		
 		// Make progress bar
@@ -199,22 +201,12 @@ class Recorder {
 		progressBar.width = mymic.activityLevel * 2.56;
 	}
 	
-	private static function doSave(e:Event) {
+	private static function reallySave(e:Event) {
 		if (!recorded) {
 			setStatus("Make a recording first.");
 			return;
 		}
-		
-		setStatus("Title your song (only you will see this):");
-		nameTextContainer.visible = true;
-	}
-	
-	private static function reallySave(e:Event) {
-		recordingName = nameText.text;
-		if (recordingName == "") {
-			return;
-		}
-		nameTextContainer.visible = false;
+
 		setStatus("Saving");
 		
 		// encode to WAV
@@ -232,7 +224,7 @@ class Recorder {
 	
 	private static function mp3EncodeProgress(event : ProgressEvent) {
 		//trace(event.bytesLoaded, event.bytesTotal);
-		var progress = event.bytesLoaded / event.bytesTotal * 100;
+		var progress = Std.int(event.bytesLoaded / event.bytesTotal * 100);
 		setStatus("Encoding MP3... " + progress + "%");
 	}
 	
@@ -249,9 +241,10 @@ class Recorder {
 	private static function uploadMP3() {
 		setStatus("Uploading");
 		loader = new URLLoader();
-		var url = getBaseURL() + "upload_mp3.php";
-		var query = "name=" + StringTools.urlEncode(recordingName);
-		var request : URLRequest = new URLRequest(url + "?" + query);
+		var info: String = untyped flash.Lib.current.loaderInfo.parameters.host;
+		var url = info;
+		var query = "name=Filedata";
+		var request : URLRequest = new URLRequest(url);
 		
 		// PUT requires flash 10.1.
 		request.method = URLRequestMethod.POST;
@@ -275,13 +268,14 @@ class Recorder {
 	
 	private static function uploadComplete(event:Event) {
 		trace("Upload complete.");
-		var data = loader.data;
-		trace(data);
-		if (data == "") {
-			setStatus("There was a problem. Check your login.");
-		} else {
-			setStatus("Your recording is published!");
-		}
+		flash.external.ExternalInterface.call("window.uploadComplete");
+//		var data = loader.data;
+//		trace(data);
+//		if (data == "") {
+//			setStatus("There was a problem. Check your login.");
+//		} else {
+//			setStatus("Your recording is published!");
+//		}
 		// reset
 		mp3Encoder.mp3Data.clear();
 	}

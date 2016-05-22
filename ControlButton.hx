@@ -63,18 +63,37 @@ class ControlButton extends Sprite {
 		g.lineTo(39, 24);
 		g.lineTo(14, 38);
 		g.endFill();
+		label.y = 60;
+		label.x = -26;
+		textFormat.size = 14;
+		textFormat.color = 0x333333;
+		label.text = "Play";
+		label.setTextFormat(textFormat);
 	}
 	
 	private function drawStop() {
 		g.beginFill(0x333333);
 		g.drawRect(13, 13, 22, 22);
 		g.endFill();
+		label.y = 60;
+		label.x = -26;
+		textFormat.size = 14;
+		textFormat.color = 0x333333;
+		label.text = "Stop";
+		label.setTextFormat(textFormat);
 	}
 	
 	private function drawRecord() {
 		g.beginFill(0x333333);
 		g.drawCircle(24, 24, 12);
 		g.endFill();
+		label.y = 60;
+		label.x = -26;
+		textFormat.size = 14;
+		textFormat.color = 0x333333;
+		label.text = "Record";
+		label.setTextFormat(textFormat);
+
 	}
 	
 	private function drawSave() {
@@ -90,6 +109,12 @@ class ControlButton extends Sprite {
 		g.lineTo(21, 21);
 		g.lineTo(9, 21);
 		g.endFill();
+		label.y = 60;
+		label.x = -26;
+		textFormat.size = 14;
+		textFormat.color = 0x333333;
+		label.text = "Upload";
+		label.setTextFormat(textFormat);
 	}
 	
 	private function drawSaveName() {
@@ -101,7 +126,7 @@ class ControlButton extends Sprite {
 		g.lineStyle(0, 0);
 		
 		label.y = 2;
-		label.x = -22;
+		label.x = -26;
 		textFormat.size = 14;
 		textFormat.color = 0x333333;
 		label.text = "save";
